@@ -10,12 +10,16 @@ import { RegisterData } from '../../models/movie.interface';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="auth-page">
+      <div class="auth-bg-glow"></div>
+
       <div class="auth-card">
-        <div class="auth-header">
-          <span class="auth-icon">🎬</span>
-          <h1>Create Account</h1>
-          <p>Join MovieList and track your movies</p>
+        <div class="auth-brand">
+          <div class="brand-dot"></div>
+          MovieList
         </div>
+
+        <h1 class="auth-title">Create account</h1>
+        <p class="auth-subtitle">Start tracking your movies today</p>
 
         @if (errorMessage) {
           <div class="error-banner">{{ errorMessage }}</div>
@@ -25,111 +29,164 @@ import { RegisterData } from '../../models/movie.interface';
         }
 
         <div class="form-group">
-          <label>Username</label>
-          <!-- ngModel #3 -->
+          <label class="form-label">Username</label>
           <input
             type="text"
             [(ngModel)]="registerData.username"
             name="username"
-            placeholder="Choose a username"
+            placeholder="choose_a_username"
             class="form-input"
           />
         </div>
 
         <div class="form-group">
-          <label>Email</label>
-          <!-- ngModel #4 -->
+          <label class="form-label">Email</label>
           <input
             type="email"
             [(ngModel)]="registerData.email"
             name="email"
-            placeholder="Enter your email"
+            placeholder="you@example.com"
             class="form-input"
           />
         </div>
 
         <div class="form-group">
-          <label>Password</label>
+          <label class="form-label">Password</label>
           <input
             type="password"
             [(ngModel)]="registerData.password"
             name="password"
-            placeholder="Create a password"
+            placeholder="••••••••"
             class="form-input"
           />
         </div>
 
-        <!-- click event #2 -->
-        <button class="btn-primary" (click)="onRegister()" [disabled]="loading">
-          {{ loading ? 'Creating account...' : 'Create Account' }}
+        <button class="btn-gold full-width" (click)="onRegister()" [disabled]="loading">
+          @if (loading) { Creating account... } @else { Create Account }
         </button>
 
-        <p class="auth-link">Already have an account? <a routerLink="/login">Sign In</a></p>
+        <p class="auth-footer">
+          Already have an account?
+          <a routerLink="/login">Sign in</a>
+        </p>
       </div>
     </div>
   `,
   styles: [`
     .auth-page {
       min-height: 100vh;
-      background: #0a0a14;
+      background: #0b0c14;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-bg-glow {
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(200,169,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
     }
     .auth-card {
-      background: #0f0f1a;
-      border: 1px solid #2a2a3e;
-      border-radius: 16px;
+      background: #0f1020;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
       padding: 2.5rem;
       width: 100%;
       max-width: 400px;
+      position: relative;
+      z-index: 1;
     }
-    .auth-header { text-align: center; margin-bottom: 2rem; }
-    .auth-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
-    h1 { color: #f0f0ff; font-size: 1.6rem; margin: 0 0 0.3rem; }
-    p { color: #6060a0; font-size: 0.9rem; margin: 0; }
-    .form-group { margin-bottom: 1.2rem; }
-    label { display: block; color: #a0a0c0; font-size: 0.85rem; margin-bottom: 0.4rem; }
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: #1a1a2e;
-      border: 1px solid #2a2a3e;
-      border-radius: 8px;
-      color: #f0f0ff;
-      font-size: 0.95rem;
-      box-sizing: border-box;
-      transition: border-color 0.2s;
-    }
-    .form-input:focus { outline: none; border-color: #e2b96a; }
-    .btn-primary {
-      width: 100%;
-      padding: 0.85rem;
-      background: #e2b96a;
-      color: #0f0f1a;
-      border: none;
-      border-radius: 8px;
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: #c8a96e;
       font-size: 1rem;
       font-weight: 700;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      transition: background 0.2s;
+      margin-bottom: 1.75rem;
     }
-    .btn-primary:hover:not(:disabled) { background: #f0c97a; }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .brand-dot { width: 8px; height: 8px; background: #c8a96e; border-radius: 50%; }
+    .auth-title { color: #f0f0ff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .auth-subtitle { color: #66688a; font-size: 0.88rem; margin-bottom: 1.75rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label {
+      display: block;
+      color: #66688a;
+      font-size: 0.77rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.72rem 1rem;
+      background: #161728;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #f0f0ff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #c8a96e;
+      box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
+    }
+    .form-input::placeholder { color: #44446a; }
+    .btn-gold {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      background: #c8a96e;
+      color: #0b0c14;
+      border: none;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn-gold.full-width { width: 100%; }
+    .btn-gold:hover { background: #dfc08a; }
+    .btn-gold:disabled { opacity: 0.55; cursor: not-allowed; }
     .error-banner {
-      background: #2a1a1a; border: 1px solid #c0404040;
-      color: #e06060; padding: 0.75rem 1rem;
-      border-radius: 8px; margin-bottom: 1.2rem; font-size: 0.9rem;
+      background: rgba(220,60,60,0.08);
+      border: 1px solid rgba(220,60,60,0.25);
+      color: #e06060;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.87rem;
+      margin-bottom: 1.2rem;
     }
     .success-banner {
-      background: #1a2a1a; border: 1px solid #40c04040;
-      color: #60e060; padding: 0.75rem 1rem;
-      border-radius: 8px; margin-bottom: 1.2rem; font-size: 0.9rem;
+      background: rgba(60,200,100,0.08);
+      border: 1px solid rgba(60,200,100,0.25);
+      color: #4dd47a;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.87rem;
+      margin-bottom: 1.2rem;
     }
-    .auth-link { text-align: center; color: #6060a0; font-size: 0.9rem; margin-top: 1.2rem; }
-    .auth-link a { color: #e2b96a; text-decoration: none; }
+    .auth-footer {
+      text-align: center;
+      color: #44446a;
+      font-size: 0.87rem;
+      margin-top: 1.25rem;
+    }
+    .auth-footer a { color: #c8a96e; text-decoration: none; font-weight: 500; }
   `]
 })
 export class RegisterComponent {
@@ -153,10 +210,9 @@ export class RegisterComponent {
         this.loading = false;
         const errors = err.error;
         if (typeof errors === 'object') {
-          const msgs = Object.entries(errors).map(([k, v]) => `${k}: ${v}`).join(', ');
-          this.errorMessage = msgs;
+          this.errorMessage = Object.entries(errors).map(([k, v]) => `${k}: ${v}`).join(' · ');
         } else {
-          this.errorMessage = errors?.detail || 'Registration failed.';
+          this.errorMessage = errors?.detail || 'Registration failed. Please try again.';
         }
       }
     });

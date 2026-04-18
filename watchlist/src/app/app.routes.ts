@@ -6,22 +6,22 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent),
-    canActivate: [authGuard]
+    //canActivate: [authGuard]
   },
   {
     path: 'watchlist',
     loadComponent: () => import('./components/watchlist/watchlist.component').then(m => m.WatchlistComponent),
-    canActivate: [authGuard]
+    //canActivate: [authGuard]
   },
   {
     path: 'add-movie',
     loadComponent: () => import('./components/add-movie/add-movie.component').then(m => m.AddMovieComponent),
-    canActivate: [authGuard]
+    //canActivate: [authGuard]
   },
   {
     path: 'movie/:id',
     loadComponent: () => import('./components/movie-detail/movie-detail.component').then(m => m.MovieDetailComponent),
-    canActivate: [authGuard]
+    //canActivate: [authGuard]
   },
   {
     path: 'login',

@@ -10,46 +10,43 @@ import { Movie } from '../../models/movie.interface';
   imports: [FormsModule, RouterLink],
   template: `
     <div class="add-page">
-      <div class="form-card">
-        <div class="form-header">
-          <h1>Add a Movie</h1>
-          <p>Add a movie to your watchlist</p>
-        </div>
+      <div class="add-header">
+        <a routerLink="/watchlist" class="back-link">← MovieList</a>
+        <h1>Add a Movie</h1>
+        <p>Add a new entry to your MovieList</p>
+      </div>
 
+      <div class="form-card">
         @if (errorMessage) {
           <div class="error-banner">{{ errorMessage }}</div>
         }
         @if (successMessage) {
-          <div class="success-banner">✅ {{ successMessage }}</div>
+          <div class="success-banner">{{ successMessage }}</div>
         }
 
         <div class="form-row">
           <div class="form-group">
-            <label>Title *</label>
-            <!-- ngModel #1 (global) -->
-            <input type="text" [(ngModel)]="movie.title" name="title" placeholder="Movie title" class="form-input" />
+            <label class="form-label">Title *</label>
+            <input type="text" [(ngModel)]="movie.title" name="title" placeholder="e.g. Dune: Part Two" class="form-input" />
           </div>
           <div class="form-group">
-            <label>Release Year</label>
-            <!-- ngModel #2 (global) -->
-            <input type="number" [(ngModel)]="movie.release_year" name="release_year" placeholder="2024" class="form-input" />
+            <label class="form-label">Release Year</label>
+            <input type="number" [(ngModel)]="movie.release_year" name="year" placeholder="2025" class="form-input" />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Genre</label>
-            <!-- ngModel #3 (global) -->
+            <label class="form-label">Genre</label>
             <select [(ngModel)]="movie.genre" name="genre" class="form-input">
-              <option value="">Select genre</option>
+              <option value="">Select a genre</option>
               @for (g of genres; track g) {
                 <option [value]="g">{{ g }}</option>
               }
             </select>
           </div>
           <div class="form-group">
-            <label>Status</label>
-            <!-- ngModel #4 (global) -->
+            <label class="form-label">Status</label>
             <select [(ngModel)]="movie.status" name="status" class="form-input">
               <option value="plan_to_watch">Plan to Watch</option>
               <option value="watching">Watching</option>
@@ -60,64 +57,129 @@ import { Movie } from '../../models/movie.interface';
         </div>
 
         <div class="form-group">
-          <label>Poster URL</label>
-          <input type="url" [(ngModel)]="movie.poster_url" name="poster_url" placeholder="https://..." class="form-input" />
+          <label class="form-label">Poster URL</label>
+          <input type="url" [(ngModel)]="movie.poster_url" name="poster" placeholder="https://image.tmdb.org/..." class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Description</label>
-          <textarea [(ngModel)]="movie.description" name="description" placeholder="Brief description..." class="form-input textarea" rows="3"></textarea>
+          <label class="form-label">Description</label>
+          <textarea [(ngModel)]="movie.description" name="desc" placeholder="Brief description of the movie..." class="form-input" rows="3"></textarea>
         </div>
 
-        <div class="form-actions">
+        <div class="form-footer">
           <a routerLink="/watchlist" class="btn-cancel">Cancel</a>
-          <!-- click event: submit -->
-          <button class="btn-primary" (click)="onSubmit()" [disabled]="loading">
-            {{ loading ? 'Adding...' : 'Add to Watchlist' }}
+          <button class="btn-submit" (click)="onSubmit()" [disabled]="loading">
+            @if (loading) { Adding... } @else { Add to MovieList }
           </button>
         </div>
       </div>
     </div>
   `,
   styles: [`
-    .add-page { padding: 2rem; max-width: 700px; margin: 0 auto; background: #0a0a14; min-height: 100vh; }
-    .form-card { background: #0f0f1a; border: 1px solid #2a2a3e; border-radius: 16px; padding: 2rem; }
-    .form-header { margin-bottom: 1.5rem; }
-    h1 { color: #f0f0ff; margin: 0 0 0.3rem; }
-    p { color: #6060a0; font-size: 0.9rem; margin: 0; }
-    .form-row { display: flex; gap: 1rem; }
-    .form-row .form-group { flex: 1; }
-    .form-group { margin-bottom: 1.2rem; }
-    label { display: block; color: #a0a0c0; font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .add-page {
+      padding: 2rem;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .add-header { margin-bottom: 1.5rem; }
+    .back-link {
+      color: #66688a;
+      text-decoration: none;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #c8a96e; }
+    h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0ff; margin-bottom: 0.25rem; }
+    p { color: #66688a; font-size: 0.87rem; }
+    .form-card {
+      background: #161728;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label {
+      display: block;
+      color: #66688a;
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.38rem;
+    }
     .form-input {
       width: 100%;
-      padding: 0.75rem 1rem;
-      background: #1a1a2e; border: 1px solid #2a2a3e;
-      border-radius: 8px; color: #f0f0ff;
-      font-size: 0.95rem; box-sizing: border-box;
-      transition: border-color 0.2s; font-family: inherit;
+      padding: 0.7rem 0.95rem;
+      background: #0f1020;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #f0f0ff;
+      font-family: inherit;
+      font-size: 0.88rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .form-input:focus { outline: none; border-color: #e2b96a; }
-    .textarea { resize: vertical; }
-    .form-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 0.5rem; }
+    .form-input:focus {
+      outline: none;
+      border-color: #c8a96e;
+      box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
+    }
+    .form-input::placeholder { color: #44446a; }
+    textarea.form-input { resize: vertical; }
+    .form-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
     .btn-cancel {
-      padding: 0.75rem 1.5rem;
-      border: 1px solid #2a2a3e; color: #a0a0c0;
-      border-radius: 8px; text-decoration: none; font-size: 0.95rem;
+      padding: 0.65rem 1.3rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #66688a;
+      text-decoration: none;
+      font-size: 0.88rem;
       transition: all 0.2s;
     }
-    .btn-cancel:hover { border-color: #6060a0; }
-    .btn-primary {
-      padding: 0.75rem 1.5rem;
-      background: #e2b96a; color: #0f0f1a;
-      border: none; border-radius: 8px;
-      font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    .btn-cancel:hover { border-color: rgba(255,255,255,0.2); color: #a0a0c0; }
+    .btn-submit {
+      padding: 0.65rem 1.6rem;
+      background: #c8a96e;
+      color: #0b0c14;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-primary:hover:not(:disabled) { background: #f0c97a; }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-    .error-banner { background: #2a1a1a; border: 1px solid #c0404040; color: #e06060; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.2rem; }
-    .success-banner { background: #1a2a1a; border: 1px solid #40c04040; color: #60e060; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.2rem; }
+    .btn-submit:hover:not(:disabled) { background: #dfc08a; }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+    .error-banner {
+      background: rgba(220,60,60,0.08);
+      border: 1px solid rgba(220,60,60,0.25);
+      color: #e06060;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 1.2rem;
+    }
+    .success-banner {
+      background: rgba(60,200,100,0.08);
+      border: 1px solid rgba(60,200,100,0.25);
+      color: #4dd47a;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 1.2rem;
+    }
+    @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
   `]
 })
 export class AddMovieComponent {
@@ -130,7 +192,7 @@ export class AddMovieComponent {
     status: 'plan_to_watch'
   };
 
-  genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'Romance', 'Animation', 'Documentary', 'Fantasy'];
+  genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'Romance', 'Animation', 'Documentary', 'Fantasy', 'Mystery', 'Adventure'];
   loading = false;
   errorMessage = '';
   successMessage = '';
@@ -148,16 +210,18 @@ export class AddMovieComponent {
     this.movieService.createMovie(this.movie).subscribe({
       next: () => {
         this.loading = false;
-        this.successMessage = 'Movie added successfully! Redirecting...';
-        setTimeout(() => this.router.navigate(['/watchlist']), 1500);
+        this.successMessage = '🎬 Movie added successfully! Redirecting...';
+        setTimeout(() => this.router.navigate(['/watchlist']), 1400);
       },
       error: (err) => {
         this.loading = false;
-        if (err.error && typeof err.error === 'object') {
-          const msgs = Object.entries(err.error).map(([k, v]) => `${k}: ${v}`).join(', ');
-          this.errorMessage = msgs;
+        const errorData = err.error;
+        if (errorData && typeof errorData === 'object') {
+          this.errorMessage = Object.entries(errorData)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join(' · ');
         } else {
-          this.errorMessage = err.error?.detail || 'Failed to add movie.';
+          this.errorMessage = errorData?.detail || 'Failed to add movie.';
         }
       }
     });

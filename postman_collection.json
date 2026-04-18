@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Movie Watchlist API",
+    "_postman_id": "12345678-abcd-1234-abcd-1234567890ab",
+    "description": "Postman collection for Movie Watchlist project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://127.0.0.1:8000/api/login/"
+      }
+    },
+    {
+      "name": "Get Movies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://127.0.0.1:8000/api/movies/"
+      }
+    },
+    {
+      "name": "Create Movie",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Example Movie\",\n  \"category\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://127.0.0.1:8000/api/movies/"
+      }
+    },
+    {
+      "name": "Add to Watchlist",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"movie\": 1,\n  \"watched\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://127.0.0.1:8000/api/watchlist/"
+      }
+    },
+    {
+      "name": "Add Review",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer YOUR_ACCESS_TOKEN"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"movie\": 1,\n  \"text\": \"Great movie\",\n  \"rating\": 5\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://127.0.0.1:8000/api/reviews/"
+      }
+    }
+  ]
+}

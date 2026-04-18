@@ -1,4 +1,4 @@
-# CineList — Movie Watchlist App
+# MovieList— Movie Watchlist App
 
 **KBTU Web Development Project | Angular + Django**
 

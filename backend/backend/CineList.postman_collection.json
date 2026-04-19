@@ -1,0 +1,520 @@
+{
+  "info": {
+    "name": "CineList API",
+    "description": "Full API collection for CineList Movie Watchlist app — KBTU Web Dev Project",
+    "_postman_id": "cinelist-kbtu-2024",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api", "type": "string" },
+    { "key": "token",    "value": "",                          "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/register/", "host": ["{{base_url}}"], "path": ["auth", "register", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"securepass123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"token\": \"9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b\",\n  \"user_id\": 1,\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/login/", "host": ["{{base_url}}"], "path": ["auth", "login", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"securepass123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"token\": \"9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b\",\n  \"user_id\": 1,\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\"\n}"
+            },
+            {
+              "name": "401 Invalid credentials",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n  \"detail\": \"Invalid credentials.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/auth/logout/", "host": ["{{base_url}}"], "path": ["auth", "logout", ""] },
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"detail\": \"Logged out successfully.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User (me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/auth/me/", "host": ["{{base_url}}"], "path": ["auth", "me", ""] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Genres",
+      "item": [
+        {
+          "name": "List Genres",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/genres/", "host": ["{{base_url}}"], "path": ["genres", ""] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  { \"id\": 1, \"name\": \"Action\", \"description\": \"\", \"movie_count\": 3 },\n  { \"id\": 2, \"name\": \"Drama\",  \"description\": \"\", \"movie_count\": 2 },\n  { \"id\": 3, \"name\": \"Sci-Fi\", \"description\": \"\", \"movie_count\": 5 }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Genre",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/genres/", "host": ["{{base_url}}"], "path": ["genres", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Horror\",\n  \"description\": \"Scary movies\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 4,\n  \"name\": \"Horror\",\n  \"description\": \"Scary movies\",\n  \"movie_count\": 0\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Movies",
+      "item": [
+        {
+          "name": "List Movies",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/movies/",
+              "host": ["{{base_url}}"],
+              "path": ["movies", ""],
+              "query": [
+                { "key": "search", "value": "dune", "disabled": true },
+                { "key": "genre",  "value": "1",    "disabled": true }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"title\": \"Dune: Part Two\",\n    \"description\": \"Paul Atreides unites with the Fremen...\",\n    \"release_year\": 2024,\n    \"poster_url\": \"\",\n    \"genre\": 3,\n    \"genre_name\": \"Sci-Fi\",\n    \"created_at\": \"2024-01-15T10:30:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create Movie",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/movies/", "host": ["{{base_url}}"], "path": ["movies", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Oppenheimer\",\n  \"description\": \"The story of J. Robert Oppenheimer.\",\n  \"release_year\": 2023,\n  \"poster_url\": \"\",\n  \"genre\": 1\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 2,\n  \"title\": \"Oppenheimer\",\n  \"description\": \"The story of J. Robert Oppenheimer.\",\n  \"release_year\": 2023,\n  \"poster_url\": \"\",\n  \"genre\": 1,\n  \"genre_name\": \"Drama\",\n  \"created_at\": \"2024-01-15T11:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Movie Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/movies/1/", "host": ["{{base_url}}"], "path": ["movies", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Dune: Part Two\",\n  \"description\": \"Paul Atreides unites with the Fremen...\",\n  \"release_year\": 2024,\n  \"poster_url\": \"\",\n  \"genre\": 3,\n  \"genre_name\": \"Sci-Fi\",\n  \"created_at\": \"2024-01-15T10:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Movie (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/movies/1/", "host": ["{{base_url}}"], "path": ["movies", "1", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Dune: Part Two\",\n  \"description\": \"Updated description.\",\n  \"release_year\": 2024,\n  \"poster_url\": \"https://example.com/dune.jpg\",\n  \"genre\": 3\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Dune: Part Two\",\n  \"description\": \"Updated description.\",\n  \"release_year\": 2024,\n  \"poster_url\": \"https://example.com/dune.jpg\",\n  \"genre\": 3,\n  \"genre_name\": \"Sci-Fi\",\n  \"created_at\": \"2024-01-15T10:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Partial Update Movie (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/movies/1/", "host": ["{{base_url}}"], "path": ["movies", "1", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"poster_url\": \"https://example.com/newposter.jpg\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"title\": \"Dune: Part Two\",\n  \"description\": \"Paul Atreides unites with the Fremen...\",\n  \"release_year\": 2024,\n  \"poster_url\": \"https://example.com/newposter.jpg\",\n  \"genre\": 3,\n  \"genre_name\": \"Sci-Fi\",\n  \"created_at\": \"2024-01-15T10:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Movie",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/movies/1/", "host": ["{{base_url}}"], "path": ["movies", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Watchlist",
+      "item": [
+        {
+          "name": "Get My Watchlist",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/watchlist/",
+              "host": ["{{base_url}}"],
+              "path": ["watchlist", ""],
+              "query": [
+                { "key": "status", "value": "watching", "disabled": true }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"movie\": 1,\n    \"movie_title\": \"Dune: Part Two\",\n    \"movie_poster\": \"\",\n    \"movie_genre\": \"Sci-Fi\",\n    \"movie_year\": 2024,\n    \"status\": \"watching\",\n    \"rating\": null,\n    \"notes\": \"\",\n    \"added_at\": \"2024-01-15T12:00:00Z\",\n    \"updated_at\": \"2024-01-15T12:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Add Movie to Watchlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/watchlist/", "host": ["{{base_url}}"], "path": ["watchlist", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movie\": 2,\n  \"status\": \"plan_to_watch\",\n  \"rating\": null,\n  \"notes\": \"Recommended by a friend\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 2,\n  \"movie\": 2,\n  \"movie_title\": \"Oppenheimer\",\n  \"movie_poster\": \"\",\n  \"movie_genre\": \"Drama\",\n  \"movie_year\": 2023,\n  \"status\": \"plan_to_watch\",\n  \"rating\": null,\n  \"notes\": \"Recommended by a friend\",\n  \"added_at\": \"2024-01-15T13:00:00Z\",\n  \"updated_at\": \"2024-01-15T13:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Watchlist Entry",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/watchlist/1/", "host": ["{{base_url}}"], "path": ["watchlist", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"movie\": 1,\n  \"movie_title\": \"Dune: Part Two\",\n  \"status\": \"watching\",\n  \"rating\": null,\n  \"notes\": \"\",\n  \"added_at\": \"2024-01-15T12:00:00Z\",\n  \"updated_at\": \"2024-01-15T12:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Watchlist Entry (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/watchlist/1/", "host": ["{{base_url}}"], "path": ["watchlist", "1", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movie\": 1,\n  \"status\": \"completed\",\n  \"rating\": 9,\n  \"notes\": \"Amazing visuals!\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"movie\": 1,\n  \"movie_title\": \"Dune: Part Two\",\n  \"status\": \"completed\",\n  \"rating\": 9,\n  \"notes\": \"Amazing visuals!\",\n  \"added_at\": \"2024-01-15T12:00:00Z\",\n  \"updated_at\": \"2024-01-15T14:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Status Only (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/watchlist/1/", "host": ["{{base_url}}"], "path": ["watchlist", "1", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"dropped\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"movie\": 1,\n  \"movie_title\": \"Dune: Part Two\",\n  \"status\": \"dropped\",\n  \"rating\": 9,\n  \"notes\": \"Amazing visuals!\",\n  \"added_at\": \"2024-01-15T12:00:00Z\",\n  \"updated_at\": \"2024-01-15T15:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Watchlist Entry",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/watchlist/1/", "host": ["{{base_url}}"], "path": ["watchlist", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Get Movie Reviews",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/movies/1/reviews/", "host": ["{{base_url}}"], "path": ["movies", "1", "reviews", ""] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"movie\": 1,\n    \"movie_title\": \"Dune: Part Two\",\n    \"username\": \"testuser\",\n    \"score\": 9,\n    \"text\": \"Visually stunning and emotionally powerful.\",\n    \"created_at\": \"2024-01-15T14:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Add Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/movies/1/reviews/", "host": ["{{base_url}}"], "path": ["movies", "1", "reviews", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 9,\n  \"text\": \"Visually stunning and emotionally powerful.\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 1,\n  \"movie\": 1,\n  \"movie_title\": \"Dune: Part Two\",\n  \"username\": \"testuser\",\n  \"score\": 9,\n  \"text\": \"Visually stunning and emotionally powerful.\",\n  \"created_at\": \"2024-01-15T14:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Token {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/reviews/1/", "host": ["{{base_url}}"], "path": ["reviews", "1", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 10,\n  \"text\": \"One of the best films of the decade!\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"movie\": 1,\n  \"movie_title\": \"Dune: Part Two\",\n  \"username\": \"testuser\",\n  \"score\": 10,\n  \"text\": \"One of the best films of the decade!\",\n  \"created_at\": \"2024-01-15T14:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/reviews/1/", "host": ["{{base_url}}"], "path": ["reviews", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "Get Watchlist Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token}}" }],
+            "url": { "raw": "{{base_url}}/stats/", "host": ["{{base_url}}"], "path": ["stats", ""] }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"total\": 14,\n  \"watching\": 2,\n  \"completed\": 7,\n  \"plan_to_watch\": 4,\n  \"dropped\": 1\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

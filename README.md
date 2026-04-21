@@ -1,4 +1,4 @@
-# MovieList — Web Development Project (KBTU)
+# MovieList — Web Development Project
 A web application designed to help users track movies they want to watch, are currently watching, or have completed. Built using Angular 17 for the frontend and Django REST Framework (DRF) for the backend.
 
 Team Members
